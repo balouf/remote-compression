@@ -457,11 +457,11 @@ document.write(`
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    &gt;&gt;&gt; probe(&#39;data/small.mp4&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; probe(&#39;data/small.mp4&#39;) # doctest: +SKIP</span>
 <span class="sd">    ({&#39;width&#39;: 1280, &#39;height&#39;: 720, &#39;codec_name&#39;: &#39;h264&#39;}, True)</span>
-<span class="sd">    &gt;&gt;&gt; probe(&#39;data/big.mp4&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; probe(&#39;data/big.mp4&#39;) # doctest: +SKIP</span>
 <span class="sd">    ({&#39;width&#39;: 1920, &#39;height&#39;: 1080, &#39;codec_name&#39;: &#39;h264&#39;}, True)</span>
-<span class="sd">    &gt;&gt;&gt; probe(&#39;data/ovnis.mp4&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; probe(&#39;data/ovnis.mp4&#39;) # doctest: +SKIP</span>
 <span class="sd">    ({}, False)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -514,17 +514,17 @@ document.write(`
 <span class="sd">    --------</span>
 
 <span class="sd">    &gt;&gt;&gt; settings = Settings()</span>
-<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/big.mp4&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/big.mp4&#39;) # doctest: +SKIP</span>
 <span class="sd">    {&#39;file&#39;: &#39;big.mp4&#39;, &#39;success&#39;: True, &#39;codec&#39;: True, &#39;resize&#39;: True, &#39;todo&#39;: True, &#39;cmd&#39;: &#39;ffmpeg -y -i &quot;%(r_source)s&quot; -vf scale=-1280:720 -map 0 -c:v libx265 -c:a copy -c:s copy -max_muxing_queue_size 9999 &quot;%(r_target)s&quot;&#39;}</span>
-<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/small.mp4&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/small.mp4&#39;) # doctest: +SKIP</span>
 <span class="sd">    {&#39;file&#39;: &#39;small.mp4&#39;, &#39;success&#39;: True, &#39;codec&#39;: True, &#39;resize&#39;: False, &#39;todo&#39;: True, &#39;cmd&#39;: &#39;ffmpeg -y -i &quot;%(r_source)s&quot;  -map 0 -c:v libx265 -c:a copy -c:s copy -max_muxing_queue_size 9999 &quot;%(r_target)s&quot;&#39;}</span>
-<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/ovnis.mp4&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/ovnis.mp4&#39;) # doctest: +SKIP</span>
 <span class="sd">    Issue with ovnis.mp4</span>
 <span class="sd">    {&#39;file&#39;: &#39;ovnis.mp4&#39;, &#39;success&#39;: False, &#39;todo&#39;: False}</span>
 <span class="sd">    &gt;&gt;&gt; settings = Settings(height=None, codec=&#39;libx264&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/big.mp4&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; settings.check(&#39;data/big.mp4&#39;) # doctest: +SKIP</span>
 <span class="sd">    {&#39;file&#39;: &#39;big.mp4&#39;, &#39;success&#39;: True, &#39;codec&#39;: False, &#39;resize&#39;: False, &#39;todo&#39;: False, &#39;cmd&#39;: &#39;ffmpeg -y -i &quot;%(r_source)s&quot;  -map 0 -c:v libx264 -c:a copy -c:s copy -max_muxing_queue_size 9999 &quot;%(r_target)s&quot;&#39;}</span>
-<span class="sd">    &gt;&gt;&gt; settings.stats[&#39;file&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; settings.stats[&#39;file&#39;] # doctest: +SKIP</span>
 <span class="sd">    &#39;big.mp4&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">codec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;libx265&#39;</span>

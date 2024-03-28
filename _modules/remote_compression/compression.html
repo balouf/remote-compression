@@ -450,7 +450,7 @@ document.write(`
 
 <span class="sd">    &gt;&gt;&gt; big = Path(&#39;data/big.mp4&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; from remote_compression.settings import Settings</span>
-<span class="sd">    &gt;&gt;&gt; with tempfile.TemporaryDirectory() as d: # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS</span>
+<span class="sd">    &gt;&gt;&gt; with tempfile.TemporaryDirectory() as d: # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS +SKIP</span>
 <span class="sd">    ...     big_copy = Path(d) / big.name</span>
 <span class="sd">    ...     _ = big_copy.write_bytes(big.read_bytes())</span>
 <span class="sd">    ...     compress(big_copy, Settings())</span>
