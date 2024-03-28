@@ -20,8 +20,7 @@ def get_config(hostname, config_path=None):
     --------
 
     >>> get_config('my_machine')  # doctest: +NORMALIZE_WHITESPACE
-    {'stricthostkeychecking': 'no', 'forwardagent': 'yes', 'forwardx11': 'no',
-    'forwardx11trusted': 'yes', 'hostname': 'my_machine'}
+    {'hostname': 'my_machine'}
     """
     if config_path is None:
         config_path = str(Path.home() / ".ssh/config")
@@ -32,7 +31,7 @@ def get_config(hostname, config_path=None):
     return config.lookup(hostname)
 
 
-class SSH:
+class SSH(paramiko.SSHClient):
     """
     Context manager for making a paramiko connection with possible proxyjump.
 
@@ -40,23 +39,17 @@ class SSH:
     ----------
     hostname: :class:`str`
         Destination. `~/.ssh/config` will be used to retrieve extra parameters.
-    identityfile: :class:`str`, optional
-        Location of the private key.
-    user: :class:`str`, optional
-        Username (for destination).
-    proxyjump: :class:`str`, optional
-        Jump information. Can be like gateway.com or login@gateway.com.
 
     Examples
     --------
 
-    >>> with SSH('hyperion') as ssh:  # doctest: +NORMALIZE_WHITESPACE
+    >>> with SSH('remote_host') as ssh:  # doctest: +NORMALIZE_WHITESPACE
     ...     _stdin, _stdout,_stderr = ssh.exec_command("pwd")
     ...     print(_stdout.read().decode())
     /home/fmathieu
     """
-    def __init__(self, hostname, **kwargs):
-        self.cfg = {**get_config(hostname), **kwargs}
+    def __init__(self, hostname):
+        self.cfg = get_config(hostname)
         self.gw = paramiko.SSHClient()
         self.ssh = paramiko.SSHClient()
 

@@ -14,9 +14,17 @@ rcomp helps to perform x265 video compression on remote server.
 - Documentation: https://balouf.github.io/remote-compression/.
 
 
-## Features
+## Requirements
 
-- TODO
+- `ffprobe` must be in the path of the local machine
+- `ffmpeg` must be in the path of the remote server
+- `.ssh/config` must enable direct connection to remote server
+  - private key
+  - proxyjump if required
+
+## Usage
+
+`$ rcomp --help`
 
 ## Credits
 

@@ -62,7 +62,7 @@ def big_size(infos, max_height=720):
 
 
 @dataclass
-class VideoSettings:
+class Settings:
     """
     Attributes
     ----------
@@ -73,12 +73,17 @@ class VideoSettings:
         Enforce full channel redirection. Use it to avoid (a bit) silent conversion errors due to strange multi-channel streams.
     height: int, optional
         Maximal height (for resizing)
-    replace: bool
+    replace: bool, optional
         Should the transcoded version overwrite the original (do it at your own risk!)
+    hostname: `str`, optional
+        Remote host. Details related to connection should lie in the ssh config file.
+    stats: `dict`
+        Result of last check.
 
     Examples
+    --------
 
-    >>> settings = VideoSettings()
+    >>> settings = Settings()
     >>> settings.check('data/big.mp4')
     {'file': 'big.mp4', 'success': True, 'codec': True, 'resize': True, 'todo': True, 'cmd': 'ffmpeg -y -i "%(r_source)s" -vf scale=-1280:720 -map 0 -c:v libx265 -c:a copy -c:s copy -max_muxing_queue_size 9999 "%(r_target)s"'}
     >>> settings.check('data/small.mp4')
@@ -86,14 +91,18 @@ class VideoSettings:
     >>> settings.check('data/ovnis.mp4')
     Issue with ovnis.mp4
     {'file': 'ovnis.mp4', 'success': False, 'todo': False}
-    >>> settings = VideoSettings(height=None, codec='libx264')
+    >>> settings = Settings(height=None, codec='libx264')
     >>> settings.check('data/big.mp4')
     {'file': 'big.mp4', 'success': True, 'codec': False, 'resize': False, 'todo': False, 'cmd': 'ffmpeg -y -i "%(r_source)s"  -map 0 -c:v libx264 -c:a copy -c:s copy -max_muxing_queue_size 9999 "%(r_target)s"'}
+    >>> settings.stats['file']
+    'big.mp4'
     """
     codec: str = 'libx265'
     map: bool = True
     height: int = 720
     replace: bool = False
+    hostname: str = 'remote_host'
+    stats: dict = None
 
     def check(self, file):
         file = Path(file)
@@ -118,4 +127,5 @@ class VideoSettings:
             codec = f"-c:v {self.codec} -c:a copy"
         res["todo"] = res['codec'] or res['resize']
         res['cmd'] = f"ffmpeg -y -i \"%(r_source)s\" {resize} {codec} -max_muxing_queue_size 9999 \"%(r_target)s\""
+        self.stats = res
         return res

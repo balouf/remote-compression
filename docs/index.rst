@@ -7,8 +7,6 @@ Welcome to Remote Compression's documentation!
 
    readme
    installation
-   usage
-   tutorials/index
    reference/index
    contributing
    authors
