@@ -43,7 +43,7 @@ class SSH(paramiko.SSHClient):
     Examples
     --------
 
-    >>> with SSH('remote_host') as ssh:  # doctest: +NORMALIZE_WHITESPACE
+    >>> with SSH('remote_host') as ssh:  # doctest: +NORMALIZE_WHITESPACE +SKIP
     ...     _stdin, _stdout,_stderr = ssh.exec_command("pwd")
     ...     print(_stdout.read().decode())
     /home/fmathieu

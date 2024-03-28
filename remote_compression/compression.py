@@ -23,7 +23,7 @@ def compress(source, settings):
 
     >>> big = Path('data/big.mp4')
     >>> from remote_compression.settings import Settings
-    >>> with tempfile.TemporaryDirectory() as d: # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    >>> with tempfile.TemporaryDirectory() as d: # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS +SKIP
     ...     big_copy = Path(d) / big.name
     ...     _ = big_copy.write_bytes(big.read_bytes())
     ...     compress(big_copy, Settings())

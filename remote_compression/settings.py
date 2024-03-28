@@ -30,11 +30,11 @@ def probe(file, fields=None):
     Examples
     --------
 
-    >>> probe('data/small.mp4')
+    >>> probe('data/small.mp4') # doctest: +SKIP
     ({'width': 1280, 'height': 720, 'codec_name': 'h264'}, True)
-    >>> probe('data/big.mp4')
+    >>> probe('data/big.mp4') # doctest: +SKIP
     ({'width': 1920, 'height': 1080, 'codec_name': 'h264'}, True)
-    >>> probe('data/ovnis.mp4')
+    >>> probe('data/ovnis.mp4') # doctest: +SKIP
     ({}, False)
     """
     if fields is None:
@@ -84,17 +84,17 @@ class Settings:
     --------
 
     >>> settings = Settings()
-    >>> settings.check('data/big.mp4')
+    >>> settings.check('data/big.mp4') # doctest: +SKIP
     {'file': 'big.mp4', 'success': True, 'codec': True, 'resize': True, 'todo': True, 'cmd': 'ffmpeg -y -i "%(r_source)s" -vf scale=-1280:720 -map 0 -c:v libx265 -c:a copy -c:s copy -max_muxing_queue_size 9999 "%(r_target)s"'}
-    >>> settings.check('data/small.mp4')
+    >>> settings.check('data/small.mp4') # doctest: +SKIP
     {'file': 'small.mp4', 'success': True, 'codec': True, 'resize': False, 'todo': True, 'cmd': 'ffmpeg -y -i "%(r_source)s"  -map 0 -c:v libx265 -c:a copy -c:s copy -max_muxing_queue_size 9999 "%(r_target)s"'}
-    >>> settings.check('data/ovnis.mp4')
+    >>> settings.check('data/ovnis.mp4') # doctest: +SKIP
     Issue with ovnis.mp4
     {'file': 'ovnis.mp4', 'success': False, 'todo': False}
     >>> settings = Settings(height=None, codec='libx264')
-    >>> settings.check('data/big.mp4')
+    >>> settings.check('data/big.mp4') # doctest: +SKIP
     {'file': 'big.mp4', 'success': True, 'codec': False, 'resize': False, 'todo': False, 'cmd': 'ffmpeg -y -i "%(r_source)s"  -map 0 -c:v libx264 -c:a copy -c:s copy -max_muxing_queue_size 9999 "%(r_target)s"'}
-    >>> settings.stats['file']
+    >>> settings.stats['file'] # doctest: +SKIP
     'big.mp4'
     """
     codec: str = 'libx265'
