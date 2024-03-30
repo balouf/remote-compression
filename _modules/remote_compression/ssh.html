@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>remote_compression.ssh &#8212; Remote Compression 0.1.1 documentation</title>
+    <title>remote_compression.ssh &#8212; Remote Compression 0.1.2 documentation</title>
   
   
   
@@ -34,7 +34,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
 
-    <script src="../../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../../_static/documentation_options.js?v=92734c54"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Remote Compression 0.1.1 documentation</p>
+    <p class="title logo__title">Remote Compression 0.1.2 documentation</p>
   
 </a></div>
     
@@ -425,6 +425,7 @@ document.write(`
   <h1>Source code for remote_compression.ssh</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">paramiko</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 
 <div class="viewcode-block" id="get_config">
@@ -459,6 +460,16 @@ document.write(`
 
 
 
+<span class="k">def</span> <span class="nf">auto_retry</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">attempts</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">attempts</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">SSHException</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">SSHException</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">auto_retry</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">attempts</span><span class="o">=</span><span class="n">attempts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="SSH">
 <a class="viewcode-back" href="../../reference/ssh.html#remote_compression.ssh.SSH">[docs]</a>
 <span class="k">class</span> <span class="nc">SSH</span><span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">):</span>
@@ -478,6 +489,7 @@ document.write(`
 <span class="sd">    ...     print(_stdout.read().decode())</span>
 <span class="sd">    /home/fmathieu</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">(</span><span class="n">hostname</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gw</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
@@ -496,15 +508,15 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">gw_user</span><span class="p">,</span> <span class="n">gw_dest</span> <span class="o">=</span> <span class="n">user</span><span class="p">,</span> <span class="n">jump</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gw</span><span class="o">.</span><span class="n">set_missing_host_key_policy</span><span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">AutoAddPolicy</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">gw</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">gw_dest</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">gw_user</span><span class="p">,</span> <span class="n">key_filename</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
-                            <span class="n">banner_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">auth_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+            <span class="n">auto_retry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gw</span><span class="p">,</span> <span class="n">hostname</span><span class="o">=</span><span class="n">gw_dest</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">gw_user</span><span class="p">,</span> <span class="n">key_filename</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                       <span class="n">banner_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">auth_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
             <span class="n">transport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gw</span><span class="o">.</span><span class="n">get_transport</span><span class="p">()</span>
             <span class="n">dest_addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
             <span class="n">local_addr</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
             <span class="n">sock</span> <span class="o">=</span> <span class="n">transport</span><span class="o">.</span><span class="n">open_channel</span><span class="p">(</span><span class="s2">&quot;direct-tcpip&quot;</span><span class="p">,</span> <span class="n">dest_addr</span><span class="p">,</span> <span class="n">local_addr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">set_missing_host_key_policy</span><span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">AutoAddPolicy</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">key_filename</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">sock</span><span class="o">=</span><span class="n">sock</span><span class="p">,</span>
-                         <span class="n">banner_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">auth_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">auto_retry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ssh</span><span class="p">,</span> <span class="n">hostname</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">key_filename</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">sock</span><span class="o">=</span><span class="n">sock</span><span class="p">,</span>
+                   <span class="n">banner_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">auth_timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
