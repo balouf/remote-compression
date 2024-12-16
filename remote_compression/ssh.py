@@ -79,14 +79,15 @@ class SSH(paramiko.SSHClient):
                 gw_user, gw_dest = user, jump
             self.gw.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             auto_retry(self.gw, hostname=gw_dest, username=gw_user, key_filename=key,
-                       banner_timeout=100, timeout=100, auth_timeout=100)
+                       banner_timeout=100, timeout=100, auth_timeout=100, allow_agent=False)
             transport = self.gw.get_transport()
+            transport.set_keepalive(60)
             dest_addr = (dest, 22)
             local_addr = ('127.0.0.1', 22)
             sock = transport.open_channel("direct-tcpip", dest_addr, local_addr)
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         auto_retry(self.ssh, hostname=dest, username=user, key_filename=key, sock=sock,
-                   banner_timeout=100, timeout=100, auth_timeout=100)
+                   banner_timeout=100, timeout=100, auth_timeout=100, allow_agent=False)
         return self.ssh
 
     def __exit__(self, exc_type, exc_val, exc_tb):

@@ -35,8 +35,8 @@ def compress(source, settings):
     return_value = {source.name}
     if stats['todo'] is False:
         return return_value
-    r_source = f"temp/{next(tempfile._get_candidate_names())}{source.suffix}"
-    r_target = f"temp/{next(tempfile._get_candidate_names())}{source.suffix}"
+    r_source = f".rcomp/{next(tempfile._get_candidate_names())}{source.suffix}"
+    r_target = f".rcomp/{next(tempfile._get_candidate_names())}{source.suffix}"
     cmd = stats['cmd'] % {'r_target': r_target, 'r_source': r_source}
     comp = source.with_name(f"comp_{source.name}")
     ori = source.with_name(f"ori_{source.name}")
@@ -46,11 +46,11 @@ def compress(source, settings):
         exit_status = stdout.channel.recv_exit_status()
         try:
             ftp.get(r_target, str(comp))
-            ssh.exec_command(f"rm -f {r_target}")
+            ssh.exec_command(f"rm {r_target}")
         except FileNotFoundError:
             print("Failed compression")
 
-        ssh.exec_command(f"rm -f {r_source}")
+        ssh.exec_command(f"rm {r_source}")
 
     if comp.exists:
         old_s = source.stat().st_size
