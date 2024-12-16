@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>remote_compression.compression &#8212; Remote Compression 0.1.2 documentation</title>
+    <title>remote_compression.compression &#8212; Remote Compression 0.1.3 documentation</title>
   
   
   
@@ -34,8 +34,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
 
-    <script src="../../_static/documentation_options.js?v=92734c54"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=360bc84d"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/remote_compression/compression';</script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Remote Compression 0.1.2 documentation</p>
+    <p class="title logo__title">Remote Compression 0.1.3 documentation</p>
   
 </a></div>
     
@@ -462,8 +462,8 @@ document.write(`
     <span class="n">return_value</span> <span class="o">=</span> <span class="p">{</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;todo&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">return_value</span>
-    <span class="n">r_source</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;temp/</span><span class="si">{</span><span class="nb">next</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">_get_candidate_names</span><span class="p">())</span><span class="si">}{</span><span class="n">source</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="n">r_target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;temp/</span><span class="si">{</span><span class="nb">next</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">_get_candidate_names</span><span class="p">())</span><span class="si">}{</span><span class="n">source</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">r_source</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.rcomp/</span><span class="si">{</span><span class="nb">next</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">_get_candidate_names</span><span class="p">())</span><span class="si">}{</span><span class="n">source</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">r_target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.rcomp/</span><span class="si">{</span><span class="nb">next</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">_get_candidate_names</span><span class="p">())</span><span class="si">}{</span><span class="n">source</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;cmd&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;r_target&#39;</span><span class="p">:</span> <span class="n">r_target</span><span class="p">,</span> <span class="s1">&#39;r_source&#39;</span><span class="p">:</span> <span class="n">r_source</span><span class="p">}</span>
     <span class="n">comp</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;comp_</span><span class="si">{</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">ori</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ori_</span><span class="si">{</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -473,11 +473,11 @@ document.write(`
         <span class="n">exit_status</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">recv_exit_status</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ftp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">r_target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
-            <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm -f </span><span class="si">{</span><span class="n">r_target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm </span><span class="si">{</span><span class="n">r_target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed compression&quot;</span><span class="p">)</span>
 
-        <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm -f </span><span class="si">{</span><span class="n">r_source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm </span><span class="si">{</span><span class="n">r_source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span>
         <span class="n">old_s</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
@@ -546,7 +546,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
     <br/>
   </p>
 </div>
