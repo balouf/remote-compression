@@ -36,7 +36,8 @@ def compress(source, settings):
     if stats['todo'] is False:
         return return_value
     r_source = f".rcomp/{next(tempfile._get_candidate_names())}{source.suffix}"
-    r_target = f".rcomp/{next(tempfile._get_candidate_names())}{source.suffix}"
+    t_suffix = source.suffix if source.suffix != ".m4v" else ".mp4"
+    r_target = f".rcomp/{next(tempfile._get_candidate_names())}{t_suffix}"
     cmd = stats['cmd'] % {'r_target': r_target, 'r_source': r_source}
     comp = source.with_name(f"comp_{source.name}")
     ori = source.with_name(f"ori_{source.name}")
