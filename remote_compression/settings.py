@@ -7,7 +7,7 @@ default_fields = ['width', 'height', 'codec_name']
 
 full_extensions = {".avi", ".mp4", ".flv", ".wmv", ".mkv", ".ts", ".webm"}
 
-default_extensions = {".mkv", ".mp4"}
+default_extensions = {".mkv", ".mp4", ".m4v"}
 
 
 def probe(file, fields=None):
