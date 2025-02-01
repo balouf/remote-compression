@@ -1,5 +1,9 @@
 # History
 
+## 0.1.4 (2024-02-01): Default extensions expanded
+
+* TODO: add cli interface for extensions
+
 ## 0.1.3 (2024-12-16): New working directory
 
 - Default server working directory switched to `.rcomp`
