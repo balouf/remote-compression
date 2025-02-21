@@ -5,9 +5,9 @@ from pathlib import Path
 
 default_fields = ['width', 'height', 'codec_name']
 
-full_extensions = {".avi", ".mp4", ".flv", ".wmv", ".mkv", ".ts", ".webm"}
+default_extensions = {".avi", ".mp4", ".flv", ".wmv", ".mkv", ".ts", ".webm", "m4v"}
 
-default_extensions = {".mkv", ".mp4", ".m4v"}
+main_extensions = {".mkv", ".mp4"}
 
 
 def probe(file, fields=None):

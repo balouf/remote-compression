@@ -1,5 +1,7 @@
 import tempfile
 from pathlib import Path
+import subprocess
+
 from remote_compression.ssh import SSH
 
 
@@ -41,17 +43,28 @@ def compress(source, settings):
     cmd = stats['cmd'] % {'r_target': r_target, 'r_source': r_source}
     comp = source.with_name(f"comp_{source.name}")
     ori = source.with_name(f"ori_{source.name}")
-    with SSH(settings.hostname) as ssh, ssh.open_sftp() as ftp:
-        ftp.put(str(source), r_source)
-        stdin, stdout, stderr = ssh.exec_command(cmd)
-        exit_status = stdout.channel.recv_exit_status()
-        try:
-            ftp.get(r_target, str(comp))
-            ssh.exec_command(f"rm {r_target}")
-        except FileNotFoundError:
-            print("Failed compression")
+    host = settings.hostname
+    if host != "local":
+        with SSH(host) as ssh, ssh.open_sftp() as ftp:
+            ftp.put(str(source), r_source)
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+            exit_status = stdout.channel.recv_exit_status()
+            try:
+                ftp.get(r_target, str(comp))
+                ssh.exec_command(f"rm {r_target}")
+            except FileNotFoundError:
+                print("Failed compression")
 
-        ssh.exec_command(f"rm {r_source}")
+            ssh.exec_command(f"rm {r_source}")
+    else:
+        cmd = stats['cmd'] % {'r_target': str(comp), 'r_source': str(source)}
+        print(cmd)
+        ffmpeg_output = subprocess.run(cmd,
+                                       universal_newlines=True,
+                                       shell=True,
+                                       stdout=subprocess.PIPE)
+        exit_status = ffmpeg_output.returncode
+        print(exit_status)
 
     if comp.exists:
         old_s = source.stat().st_size

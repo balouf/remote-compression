@@ -1,6 +1,11 @@
 # History
 
-## 0.1.4 (2024-02-01): Default extensions expanded
+## 0.1.5 (2025-02-21): Local mode added
+
+* Set hostname to `local` to use local ffmpeg
+* Other edfault extensions added
+
+## 0.1.4 (2025-02-01): Default extensions expanded
 
 * TODO: add cli interface for extensions
 

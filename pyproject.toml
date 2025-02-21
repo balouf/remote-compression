@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "remote-compression"
-version = "0.1.4"
+version = "0.1.5"
 description = "rcomp helps to perform x265 video compression on remote server."
 authors = ["Fabien Mathieu <loufab@gmail.com>"]
 repository = "https://github.com/balouf/remote-compression"
