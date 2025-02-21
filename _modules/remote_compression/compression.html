@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>remote_compression.compression &#8212; Remote Compression 0.1.4 documentation</title>
+    <title>remote_compression.compression &#8212; Remote Compression 0.1.5 documentation</title>
   
   
   
@@ -34,7 +34,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
 
-    <script src="../../_static/documentation_options.js?v=fd825880"></script>
+    <script src="../../_static/documentation_options.js?v=59fadc99"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Remote Compression 0.1.4 documentation</p>
+    <p class="title logo__title">Remote Compression 0.1.5 documentation</p>
   
 </a></div>
     
@@ -425,6 +425,8 @@ document.write(`
   <h1>Source code for remote_compression.compression</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
 <span class="kn">from</span> <span class="nn">remote_compression.ssh</span> <span class="kn">import</span> <span class="n">SSH</span>
 
 
@@ -468,17 +470,28 @@ document.write(`
     <span class="n">cmd</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;cmd&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;r_target&#39;</span><span class="p">:</span> <span class="n">r_target</span><span class="p">,</span> <span class="s1">&#39;r_source&#39;</span><span class="p">:</span> <span class="n">r_source</span><span class="p">}</span>
     <span class="n">comp</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;comp_</span><span class="si">{</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">ori</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ori_</span><span class="si">{</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">SSH</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span> <span class="k">as</span> <span class="n">ssh</span><span class="p">,</span> <span class="n">ssh</span><span class="o">.</span><span class="n">open_sftp</span><span class="p">()</span> <span class="k">as</span> <span class="n">ftp</span><span class="p">:</span>
-        <span class="n">ftp</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">),</span> <span class="n">r_source</span><span class="p">)</span>
-        <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-        <span class="n">exit_status</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">recv_exit_status</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">ftp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">r_target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
-            <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm </span><span class="si">{</span><span class="n">r_target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed compression&quot;</span><span class="p">)</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">hostname</span>
+    <span class="k">if</span> <span class="n">host</span> <span class="o">!=</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">SSH</span><span class="p">(</span><span class="n">host</span><span class="p">)</span> <span class="k">as</span> <span class="n">ssh</span><span class="p">,</span> <span class="n">ssh</span><span class="o">.</span><span class="n">open_sftp</span><span class="p">()</span> <span class="k">as</span> <span class="n">ftp</span><span class="p">:</span>
+            <span class="n">ftp</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">),</span> <span class="n">r_source</span><span class="p">)</span>
+            <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+            <span class="n">exit_status</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">recv_exit_status</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ftp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">r_target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+                <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm </span><span class="si">{</span><span class="n">r_target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed compression&quot;</span><span class="p">)</span>
 
-        <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm </span><span class="si">{</span><span class="n">r_source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm </span><span class="si">{</span><span class="n">r_source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;cmd&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;r_target&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">comp</span><span class="p">),</span> <span class="s1">&#39;r_source&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">)}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">ffmpeg_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span>
+                                       <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="n">exit_status</span> <span class="o">=</span> <span class="n">ffmpeg_output</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">exit_status</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span>
         <span class="n">old_s</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
