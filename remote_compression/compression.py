@@ -41,7 +41,7 @@ def compress(source, settings):
     t_suffix = source.suffix if source.suffix != ".m4v" else ".mp4"
     r_target = f".rcomp/{next(tempfile._get_candidate_names())}{t_suffix}"
     cmd = stats['cmd'] % {'r_target': r_target, 'r_source': r_source}
-    comp = source.with_name(f"comp_{source.name}")
+    comp = source.with_name(f"comp_{source.name}").with_suffix(t_suffix)
     ori = source.with_name(f"ori_{source.name}")
     host = settings.hostname
     if host != "local":
