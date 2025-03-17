@@ -5,7 +5,7 @@ from pathlib import Path
 
 default_fields = ['width', 'height', 'codec_name']
 
-default_extensions = {".avi", ".mp4", ".flv", ".wmv", ".mkv", ".ts", ".webm", "m4v"}
+default_extensions = {".avi", ".mp4", ".flv", ".wmv", ".mkv", ".ts", ".webm", ".m4v"}
 
 main_extensions = {".mkv", ".mp4"}
 
